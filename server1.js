@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 const AVAILABLE_MODELS = [
+    'gemini-3.6-flash',
     'gemini-2.5-flash',
     'gemini-2.5-flash-lite'
 ];
@@ -134,6 +135,15 @@ app.post('/auto-fix', async (req, res) => {
     }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`AMRORO Server running on port ${PORT}`);
+app.get('/', (req, res) => {
+    res.send("AMRORO AI Backend is online!");
 });
+
+// Local testing fallback / Vercel export support
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`AMRORO Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
