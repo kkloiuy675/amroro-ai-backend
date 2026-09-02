@@ -11,8 +11,8 @@ const PORT = process.env.PORT || 3000;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 const AVAILABLE_MODELS = [
-    'gemini-3.5-flash-lite',
-    'gemini-3.6-flash'
+    'gemini-2.5-flash',
+    'gemini-2.5-flash-lite'
 ];
 
 const SYSTEM_INSTRUCTION = `You are an expert Roblox Luau script, Sound, and VFX generator.
@@ -70,11 +70,11 @@ async function generateWithTimeout(promptText, timeoutMs = 8000) {
     const apiPromise = (async () => {
         for (const modelName of AVAILABLE_MODELS) {
             try {
-                const chatSession = ai.chats.create({
+                const response = await ai.models.generateContent({
                     model: modelName,
+                    contents: promptText,
                     config: { systemInstruction: SYSTEM_INSTRUCTION }
                 });
-                const response = await chatSession.sendMessage({ message: promptText });
                 if (response && response.text) {
                     return { text: response.text, usedModel: modelName };
                 }
